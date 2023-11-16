@@ -11,6 +11,7 @@ npm run dev
 ```
 And open [http://localhost:5005](http://localhost:5005)
 
+## Goal
 In this repo, our goal will be to visualize the whole game on the web page.
 
 From the frontend part, this repo will receive JSON with boards.
