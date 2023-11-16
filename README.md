@@ -1,5 +1,16 @@
 # FreeCell-GUI
 
+## To install:
+```bash
+npm install
+```
+
+## To launch:
+```bash
+npm run dev
+```
+And open [http://localhost:5005](http://localhost:5005)
+
 In this repo, our goal will be to visualize the whole game on the web page.
 
 From the frontend part, this repo will receive JSON with boards.
@@ -48,3 +59,13 @@ From the frontend part, this repo will receive JSON with boards.
   },
   // and so on...
 ]
+```
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
