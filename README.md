@@ -57,8 +57,7 @@ From the frontend part, this repo will receive JSON with boards.
       ["T of h", "A of c", "5 of c", "8 of d", "T of d", "5 of h", "6 of c"],
       ["4 of s", "J of d", "3 of d", "3 of c", "7 of d", "7 of s", "4 of c"]
     ]
-  },
-  // and so on...
+  }
 ]
 ```
 

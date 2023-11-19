@@ -1,0 +1,162 @@
+// pages/freecell/[id].js
+
+import React, {useEffect, useState} from 'react';
+import Card from '../../components/Card';
+import Stack from '../../components/Stack';
+
+const FreeCellPage = ({data}) => {
+
+
+
+    const parsedData = JSON.parse(data);
+    const [currentBoardIndex, setCurrentBoardIndex] = useState(0);
+    const boardStates = parsedData;
+    const currentBoard = boardStates[currentBoardIndex];
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const handleNextClick = () => {
+        if (currentBoardIndex < boardStates.length - 1) {
+            setCurrentBoardIndex((prevIndex) => prevIndex + 1);
+        }
+    };
+
+    const handlePrevClick = () => {
+        if (currentBoardIndex > 0) {
+            setCurrentBoardIndex((prevIndex) => prevIndex - 1);
+        }
+    };
+
+    const handlePlayClick = () => {
+        setIsPlaying(!isPlaying);
+    };
+
+    useEffect(() => {
+        let interval;
+
+        if (isPlaying) {
+            interval = setInterval(() => {
+                if (currentBoardIndex < boardStates.length - 1) {
+                    setCurrentBoardIndex((prevIndex) => prevIndex + 1);
+                } else {
+                    setIsPlaying(false);
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [currentBoardIndex, boardStates, isPlaying]);
+
+    // Function to force re-render by changing the key
+    const forceRerender = () => setKey((prevKey) => prevKey + 1);
+
+    return (
+        <div key={key} style={{
+            maxWidth: '100%',
+            padding: '20px',
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+        }}>
+            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '10px', width: '100%'}}>
+                <button onClick={() => {
+                    handlePlayClick();
+                    forceRerender();
+                }}>{isPlaying ? 'Stop Game' : 'See Game'}</button>
+                <button onClick={() => {
+                    handlePrevClick();
+                    forceRerender();
+                }}>Previous Board
+                </button>
+                <button onClick={() => {
+                    handleNextClick();
+                    forceRerender();
+                }}>Next Board
+                </button>
+            </div>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '40px', width: '100%'}}>
+                {/* Freecells (upper left) */}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row-reverse',
+                    flexWrap: 'wrap',
+                    textAlign: 'right',
+                    marginRight: '20px'
+                }}>
+                    {currentBoard.FreeCells.map((card, index) => (
+                        <Card key={index} value={card}/>
+                    ))}
+                </div>
+
+                {/* Suit cells (upper right) */}
+                <Stack stackData={currentBoard.Stack}/>
+            </div>
+
+            {/* Columns (below) */}
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', width: '100%'}}>
+                {currentBoard.Board.map((column, columnIndex) => (
+                    <div key={columnIndex} style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginRight: '10px',
+                        marginBottom: '20px',
+                        flex: '1',
+                        position: 'relative',
+                        width: 'calc(20% - 10px)'
+                    }}>
+                        {column.map((card, cardIndex) => (
+                            <Card
+                                key={cardIndex}
+                                value={card}
+                                style={{
+                                    zIndex: cardIndex + 1, // Increase zIndex to make sure cards overlap correctly
+                                    position: 'absolute',
+                                    top: cardIndex * 50, // Adjust the overlap distance
+                                }}
+                            />
+                        ))}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export async function getServerSideProps({ query }) {
+  const { id } = query;
+
+  if (id) {
+    const apiUrl = `http://localhost:5005/api/visualize?id=${encodeURIComponent(id)}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET', // Ensure that GET method is used
+      });
+      const data = await response.json();
+
+      return {
+        props: {
+          data: data || null,
+        },
+      };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return {
+        props: {
+          data: null,
+        },
+      };
+    }
+  } else {
+    return {
+      props: {
+        data: null,
+      },
+    };
+  }
+}
+
+
+
+export default FreeCellPage;
