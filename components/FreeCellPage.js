@@ -3,7 +3,6 @@ import Card from '../components/Card';
 import Stack from '../components/Stack';
 
 const FreeCellPage = ({ data }) => {
-
   const [currentBoardIndex, setCurrentBoardIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [key, setKey] = useState(0);
@@ -24,7 +23,12 @@ const FreeCellPage = ({ data }) => {
   };
 
   const handlePlayClick = () => {
-    setIsPlaying(!isPlaying);
+    if (currentBoardIndex === boardStates.length - 1) {
+      // Game has ended, restart the game
+      setCurrentBoardIndex(0);
+    } else {
+      setIsPlaying(!isPlaying);
+    }
   };
 
   useEffect(() => {
@@ -60,7 +64,7 @@ const FreeCellPage = ({ data }) => {
         <button onClick={() => {
           handlePlayClick();
           forceRerender();
-        }}>{isPlaying ? 'Stop Game' : 'See Game'}</button>
+        }}>{isPlaying ? 'Stop Game' : (currentBoardIndex === boardStates.length - 1 ? 'Restart Game' : 'See Game')}</button>
         <button onClick={() => {
           handlePrevClick();
           forceRerender();
