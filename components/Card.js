@@ -1,5 +1,3 @@
-// components/Card.js
-
 import React from 'react';
 
 const Card = ({ value, style }) => {
@@ -23,33 +21,33 @@ const Card = ({ value, style }) => {
     borderRadius: '15px',
     padding: '15px',
     margin: '10px',
-    minWidth: '80px',
-    minHeight: '120px',
+    minWidth: '120px', // Adjusted width
+    minHeight: '180px', // Adjusted height to maintain the ratio
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center', // Center the content vertically
-    alignItems: 'center', // Center the content horizontally
+    justifyContent: 'center',
+    alignItems: 'center',
     textAlign: 'center',
     backgroundColor: 'white',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     position: 'relative',
-    ...style, // Allow custom styles to override defaults
+    ...style,
   };
 
   const suitStyle_upper_left = {
     fontSize: '24px',
     color: value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
     position: 'absolute',
-    top: '5px',
-    left: '5px',
+    top: '10px', // Adjusted top position
+    left: '10px', // Adjusted left position
   };
 
   const suitStyle_bottom_right = {
     fontSize: '24px',
     color: value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
     position: 'absolute',
-    bottom: '5px',
-    right: '5px',
+    bottom: '10px', // Adjusted bottom position
+    right: '10px', // Adjusted right position
   };
 
   const valueStyle = {
@@ -57,9 +55,9 @@ const Card = ({ value, style }) => {
     fontWeight: 'bold',
     color: value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
     position: 'absolute',
-    top: '50%', // Center the value vertically
-    left: '50%', // Center the value horizontally
-    transform: 'translate(-50%, -50%)', // Center the value using translation
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
   };
 
   return (
