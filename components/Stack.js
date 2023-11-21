@@ -11,17 +11,17 @@ const Stack = ({ stackData }) => {
       flexWrap: 'wrap',
       alignItems: 'center',
     }}>
-{Object.entries(stackData).map(([suit, card], index) => (
-  <Card
-    key={index}
-    value={card ? card : getSuitSymbol(suit)} // If card is empty, show only the suit
-    style={{
-      margin: '0 10px',
-      minWidth: '120px', // Match the width of the Card component
-      minHeight: '180px', // Match the height of the Card component
-    }}
-  />
-))}
+      {Object.entries(stackData).map(([suit, card], index) => (
+        <Card
+          key={index}
+          value={card ? card : getSuitSymbol(suit)} // If card is empty, show only the suit
+          style={{
+            margin: '0 10px',
+            minWidth: '120px', // Match the width of the Card component
+            minHeight: '180px', // Match the height of the Card component
+          }}
+        />
+      ))}
 
     </div>
   );
