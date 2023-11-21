@@ -16,6 +16,7 @@ const buttonStyle = {
     cursor: 'pointer',
     margin: '10px',
 };
+
 const FreeCellPage = ({data}) => {
     const [currentBoardIndex, setCurrentBoardIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -74,6 +75,13 @@ const FreeCellPage = ({data}) => {
             flexDirection: 'column',
             alignItems: 'center',
         }}>
+            <style>{`
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: green;
+        }
+      `}</style>
             <div style={{display: 'flex', justifyContent: 'center', marginBottom: '10px', width: '100%'}}>
                 <button
                     onClick={() => {
@@ -113,7 +121,7 @@ const FreeCellPage = ({data}) => {
                 justifyContent: 'space-between',
                 marginBottom: '40px',
                 width: '100%',
-                alignItems: 'flex-start' // Align items at the top
+                alignItems: 'flex-start', // Align items at the top
             }}>
                 {/* Freecells (upper left) */}
                 <div style={{
@@ -121,8 +129,7 @@ const FreeCellPage = ({data}) => {
                     flexDirection: 'row-reverse',
                     flexWrap: 'wrap',
                     textAlign: 'right',
-                    marginRight: '20px',
-                    alignItems: 'flex-start' // Align freecells at the top
+                    alignItems: 'flex-start', // Align freecells at the top
                 }}>
                     {currentBoard.FreeCells.map((card, index) => (
                         <Card key={index} value={card}/>
@@ -130,12 +137,26 @@ const FreeCellPage = ({data}) => {
                 </div>
 
                 {/* Suit cells (upper right) */}
-                <Stack stackData={currentBoard.Stack}/>
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row-reverse',
+                    flexWrap: 'wrap',
+                    textAlign: 'right',
+                    marginRight: '15px',
+                    alignItems: 'flex-start', // Align freecells at the top
+                }}>
+                    <Stack stackData={currentBoard.Stack}/></div>
             </div>
 
 
             {/* Columns (below) */}
-            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', width: '100%'}}>
+            <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-evenly',
+                width: '100%',
+                marginTop: '20px'
+            }}>
                 {currentBoard.Board.map((column, columnIndex) => (
                     <div key={columnIndex} style={{
                         display: 'flex',
@@ -144,7 +165,7 @@ const FreeCellPage = ({data}) => {
                         marginBottom: '20px',
                         flex: '1',
                         position: 'relative',
-                        width: 'calc(20% - 10px)'
+                        width: 'calc(20% - 10px)',
                     }}>
                         {column.map((card, cardIndex) => (
                             <Card

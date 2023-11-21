@@ -1,20 +1,7 @@
 import React from 'react';
-
+import { getSuitSymbol } from './Stack';
 const Card = ({ value, style }) => {
-  const getSuitSymbol = (suit) => {
-    switch (suit) {
-      case 'h':
-        return '♥'; // Hearts
-      case 'd':
-        return '♦'; // Diamonds
-      case 'c':
-        return '♣'; // Clubs
-      case 's':
-        return '♠'; // Spades
-      default:
-        return '';
-    }
-  };
+
 
   const cardStyle = {
     border: '2px solid #333',
