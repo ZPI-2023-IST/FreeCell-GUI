@@ -58,3 +58,58 @@ export const findMove = (prevFreeCellBoard, currentFreeCellBoard) => {
 
 
 };
+
+
+export const combineBoards = (prevWholeBoard, currentWholeBoard) => {
+    let prevStack = prevWholeBoard.Stack;
+    let currentStack = currentWholeBoard.Stack;
+    let prevFreeCells = prevWholeBoard.FreeCells;
+    let currentFreeCells = currentWholeBoard.FreeCells;
+    let prevBoard = prevWholeBoard.Board;
+    let currentBoard = currentWholeBoard.Board;
+
+    let newBoard = {
+        Board: [],
+        FreeCells: [],
+        Stack: [],
+    };
+
+    for (let columnIndex = 0; columnIndex < prevBoard.length; columnIndex++) {
+        const prevColumn = prevBoard[columnIndex];
+        const currentColumn = currentBoard[columnIndex];
+
+        let biggerColumn = prevColumn.length > currentColumn.length ? prevColumn : currentColumn;
+
+        newBoard.Board.push(biggerColumn);
+    }
+
+    for(let i = 0; i < 4; i++) {
+        if(prevFreeCells[i] !== currentFreeCells[i]) {
+            newBoard.FreeCells.push(prevFreeCells[i] ? prevFreeCells[i] : currentFreeCells[i]);
+        }else {
+            newBoard.FreeCells.push(prevFreeCells[i]);
+        }
+    }
+
+    for(let i = 0; i < 4; i++) {
+        if(prevStack[i] !== currentStack[i]) {
+            newBoard.Stack.push(prevStack[i] ? prevStack[i] : currentStack[i]);
+        }else {
+            newBoard.Stack.push(prevStack[i]);
+        }
+    }
+
+    return newBoard;
+};
+
+export const whatBoard = (boardStates,currentBoardIndex)=>
+{
+    if(currentBoardIndex ===0){
+        return combineBoards(boardStates[1], boardStates[0])
+    }else if(currentBoardIndex+1< boardStates.length){
+        return combineBoards(boardStates[currentBoardIndex+1], boardStates[currentBoardIndex])
+    }else{
+        return combineBoards(boardStates[boardStates.length - 1], boardStates[boardStates.length - 2])
+    }
+}
+

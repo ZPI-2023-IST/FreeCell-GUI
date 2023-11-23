@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faArrowRight, faPause, faPlay, faRedo} from '@fortawesome/free-solid-svg-icons';
 import Card from '../components/Card';
-import {findMove} from "@/moveHelper";
+import {findMove, whatBoard} from "@/moveHelper";
+
 
 const buttonStyle = {
     backgroundColor: 'green',
@@ -25,7 +26,10 @@ const FreeCellPage = ({data}) => {
 
 
     const boardStates = data;
-    const currentBoard = boardStates[currentBoardIndex];
+    let currentBoard = whatBoard(boardStates, currentBoardIndex);
+
+
+    let nextBoard = boardStates[currentBoardIndex + 1] ? boardStates[currentBoardIndex + 1] : boardStates[boardStates.length - 1];
 
     const handleNextClick = () => {
         if (currentBoardIndex < boardStates.length - 1) {
@@ -67,30 +71,31 @@ const FreeCellPage = ({data}) => {
 
 
     useEffect(() => {
-        if (currentBoardIndex > 0) {
+        if (currentBoardIndex < boardStates.length - 1) {
             // Find the move for the current board index
-            const move = findMove(boardStates[currentBoardIndex - 1], boardStates[currentBoardIndex]);
-            console.log(move)
-            // Get the moved card element
-            const movedCardElement = document.getElementById(move.movedCard.toString());
+            const move = findMove(boardStates[currentBoardIndex], boardStates[currentBoardIndex + 1]);
 
-            // Check if there is a previously moved card and reset its background color
+            // Get all elements with the ID equal to move.movedCard
+            const movedCardElements = document.querySelectorAll('[id="' + move.movedCard + '"]');
+
             if (movedCard) {
-                const prevMovedCardElement = document.getElementById(movedCard.toString());
-                if (prevMovedCardElement) {
-                    prevMovedCardElement.style.backgroundColor = 'white';
-                }
+                // Change the background color of all movedCard elements to the original background color
+                movedCard.forEach((element) => {
+                    element.style.backgroundColor = 'white';
+                });
             }
 
-            // Change the background color of the current moved card to red
-            if (movedCardElement) {
-                movedCardElement.style.backgroundColor = 'red';
+            setMovedCard(movedCardElements);
 
-                // Set the current moved card as the new movedCard state
-                setMovedCard(move.movedCard);
-            }
+            // Change the background color of all movedCard elements to grey
+            movedCardElements.forEach((element) => {
+                element.style.backgroundColor = '#878f99';
+            });
+
+
         }
     }, [currentBoardIndex, boardStates, isPlaying]);
+
 
     useEffect(() => {
 
@@ -196,7 +201,16 @@ const FreeCellPage = ({data}) => {
                     alignItems: 'flex-start', // Align freecells at the top
                 }}>
                     {currentBoard.FreeCells.map((card, index) => (
-                        <Card key={index} value={card}/>
+                        <Card
+                            key={index}
+                            value={card}
+                            style={{
+                                borderColor: nextBoard.FreeCells[index] !== card ? 'grey' : 'black',
+                                opacity: nextBoard.FreeCells[index] !== card ? 0.5 : 1,
+                                filter: nextBoard.FreeCells[index] !== card ? 'grayscale(100%)' : 'none',
+                                cursor: nextBoard.FreeCells[index] !== card ? 'not-allowed' : 'pointer',
+                            }}
+                        />
                     ))}
                 </div>
 
@@ -210,7 +224,16 @@ const FreeCellPage = ({data}) => {
                     alignItems: 'flex-start', // Align freecells at the top
                 }}>
                     {currentBoard.Stack.map((card, index) => (
-                        <Card key={index} value={card}/>
+                        <Card
+                            key={index}
+                            value={card}
+                            style={{
+                                borderColor: nextBoard.Stack[index] !== card ? 'grey' : 'black',
+                                opacity: nextBoard.Stack[index] !== card ? 0.5 : 1,
+                                filter: nextBoard.Stack[index] !== card ? 'grayscale(100%)' : 'none',
+                                cursor: nextBoard.Stack[index] !== card ? 'not-allowed' : 'pointer',
+                            }}
+                        />
                     ))}
                 </div>
             </div>
@@ -240,7 +263,10 @@ const FreeCellPage = ({data}) => {
                                     zIndex: cardIndex + 1,
                                     position: 'absolute',
                                     top: cardIndex * 50,
-                                    backgroundColor: movedCard && movedCard.current === card ? 'grey' : 'white',
+                                    borderColor: nextBoard.Board[columnIndex][cardIndex] !== card ? 'grey' : 'black',
+                                    opacity: nextBoard.Board[columnIndex][cardIndex] !== card ? 0.5 : 1,
+                                    filter: nextBoard.Board[columnIndex][cardIndex] !== card ? 'grayscale(100%)' : 'none',
+                                    cursor: nextBoard.Board[columnIndex][cardIndex] !== card ? 'not-allowed' : 'pointer',
                                 }}
                             />
                         ))}
