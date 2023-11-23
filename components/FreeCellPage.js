@@ -70,7 +70,7 @@ const FreeCellPage = ({data}) => {
         if (currentBoardIndex > 0) {
             // Find the move for the current board index
             const move = findMove(boardStates[currentBoardIndex - 1], boardStates[currentBoardIndex]);
-
+            console.log(move)
             // Get the moved card element
             const movedCardElement = document.getElementById(move.movedCard.toString());
 
@@ -215,8 +215,6 @@ const FreeCellPage = ({data}) => {
                 </div>
             </div>
 
-
-            {/* Columns (below) */}
             <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -234,9 +232,7 @@ const FreeCellPage = ({data}) => {
                         position: 'relative',
                         width: 'calc(20% - 10px)',
                     }}>
-
                         {column.map((card, cardIndex) => (
-
                             <Card
                                 key={cardIndex}
                                 value={card}
@@ -244,12 +240,14 @@ const FreeCellPage = ({data}) => {
                                     zIndex: cardIndex + 1,
                                     position: 'absolute',
                                     top: cardIndex * 50,
+                                    backgroundColor: movedCard && movedCard.current === card ? 'grey' : 'white',
                                 }}
                             />
                         ))}
                     </div>
                 ))}
             </div>
+
 
         </div>
     );

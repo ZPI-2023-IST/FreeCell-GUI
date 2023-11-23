@@ -26,33 +26,14 @@ const findMovedCard = (prevBoard, currentBoard) => {
     return null;
 };
 
-// Helper function to find if the move is to the last index of another column
-const findMovedToColumn = (prevBoard, currentBoard, movedCard) => {
-    for (let columnIndex = 0; columnIndex < prevBoard.length; columnIndex++) {
-        const prevColumn = prevBoard[columnIndex];
-        const currentColumn = currentBoard[columnIndex];
-
-        // Check if the moved card is at the last index of the current column
-        if (currentColumn.length > 0 && currentColumn[currentColumn.length - 1] === movedCard) {
-            return true;
+const findMovedCardOnFreecell = (prevFreeCells, currentFreeCells) => {
+    for (let i = 0; i < 4; i++) {
+        if (prevFreeCells[i] !== currentFreeCells[i]) {
+            return prevFreeCells[i] ? prevFreeCells[i] : currentFreeCells[i];
         }
     }
-
-    // The moved card is not at the last index of any column
-    return false;
-};
-
-// Helper function to find if the move is to a freecell
-const findMovedToFreecell = (prevFreeCells, currentFreeCells, movedCard) => {
-    // Check if the moved card is in the current free cells
-    return currentFreeCells.includes(movedCard);
-};
-
-// Helper function to find if the move is to a suit stack
-const findMovedToSuitStack = (prevSuitStacks, currentSuitStacks, movedCard) => {
-    // Check if the moved card is in the current suit stacks
-    return Object.values(currentSuitStacks).includes(movedCard);
-};
+    return null;
+}
 
 // Main findMove function
 export const findMove = (prevFreeCellBoard, currentFreeCellBoard) => {
@@ -60,27 +41,20 @@ export const findMove = (prevFreeCellBoard, currentFreeCellBoard) => {
     const currentBoard = currentFreeCellBoard.Board;
 
     // Find the moved card
-    const movedCard = findMovedCard(prevBoard, currentBoard);
+    const movedCard_columns = findMovedCard(prevBoard, currentBoard);
+    const movedCard_freecells = findMovedCardOnFreecell(prevFreeCellBoard.FreeCells, currentFreeCellBoard.FreeCells);
 
-    if (!movedCard) {
-        // If no move is found
+    if (movedCard_columns) {
+        return {
+            movedCard: movedCard_columns,
+        };
+    } else if (movedCard_columns === null && movedCard_freecells) {
+        return {
+            movedCard: movedCard_freecells,
+        };
+    } else {
         return null;
     }
 
-    // Check if the move is to the last index of another column
-    const movedToColumn = findMovedToColumn(prevBoard, currentBoard, movedCard);
 
-    // Check if the move is to a freecell
-    const movedToFreecell = findMovedToFreecell(prevFreeCellBoard.FreeCells, currentFreeCellBoard.FreeCells, movedCard);
-
-    // Check if the move is to a suit stack
-    const movedToSuitStack = findMovedToSuitStack(prevFreeCellBoard.Stack, currentFreeCellBoard.Stack, movedCard);
-
-    // Return information about the move
-    return {
-        movedCard,
-        movedToColumn,
-        movedToFreecell,
-        movedToSuitStack,
-    };
 };
