@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faArrowRight, faPause, faPlay, faRedo} from '@fortawesome/free-solid-svg-icons';
 import Card from '../components/Card';
+import {findMove} from "@/moveHelper";
 
 const buttonStyle = {
     backgroundColor: 'green',
@@ -19,7 +20,8 @@ const buttonStyle = {
 const FreeCellPage = ({data}) => {
     const [currentBoardIndex, setCurrentBoardIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [cardPositions, setCardPositions] = useState({});
+    const [cardBackgrounds, setCardBackgrounds] = useState({});
+    const [movedCard, setMovedCard] = useState(null);
 
 
     const boardStates = data;
@@ -64,15 +66,31 @@ const FreeCellPage = ({data}) => {
     }, [currentBoardIndex, boardStates, isPlaying]);
 
 
-    // useEffect(() => {
-    //     if (currentBoardIndex > 0) {
-    //         //make a loop for stroing all positions of all possible cards in the whoal page, freecells, suitstacks, and columns
-    //         let move = findMove(boardStates[currentBoardIndex - 1], boardStates[currentBoardIndex]);
-    //         const endPosition = document.getElementById(move.movedCard.toString()).getBoundingClientRect()
-    //         const startPosition = cardPositions[move.movedCard.toString()]
-    //         console.log(startPosition.x, endPosition.x)
-    //     }
-    // }, [currentBoardIndex, boardStates, isPlaying])
+    useEffect(() => {
+        if (currentBoardIndex > 0) {
+            // Find the move for the current board index
+            const move = findMove(boardStates[currentBoardIndex - 1], boardStates[currentBoardIndex]);
+
+            // Get the moved card element
+            const movedCardElement = document.getElementById(move.movedCard.toString());
+
+            // Check if there is a previously moved card and reset its background color
+            if (movedCard) {
+                const prevMovedCardElement = document.getElementById(movedCard.toString());
+                if (prevMovedCardElement) {
+                    prevMovedCardElement.style.backgroundColor = 'white';
+                }
+            }
+
+            // Change the background color of the current moved card to red
+            if (movedCardElement) {
+                movedCardElement.style.backgroundColor = 'red';
+
+                // Set the current moved card as the new movedCard state
+                setMovedCard(move.movedCard);
+            }
+        }
+    }, [currentBoardIndex, boardStates, isPlaying]);
 
     useEffect(() => {
 
@@ -80,10 +98,10 @@ const FreeCellPage = ({data}) => {
         currentBoard.FreeCells.forEach((card) => {
             const cardElement = document.getElementById(card?.toString());
             if (cardElement) {
-                const position = cardElement.getBoundingClientRect();
-                setCardPositions((prevPositions) => ({
-                    ...prevPositions,
-                    [card.toString()]: position,
+                const background = cardElement.style.background;
+                setCardBackgrounds((prevBackground) => ({
+                    ...prevBackground,
+                    [card.toString()]: background,
                 }));
             }
         });
@@ -92,10 +110,10 @@ const FreeCellPage = ({data}) => {
         currentBoard.Stack.forEach((card) => {
             const cardElement = document.getElementById(card?.toString());
             if (cardElement) {
-                const position = cardElement.getBoundingClientRect();
-                setCardPositions((prevPositions) => ({
-                    ...prevPositions,
-                    [card.toString()]: position,
+                const background = cardElement.style.background;
+                setCardBackgrounds((prevBackground) => ({
+                    ...prevBackground,
+                    [card.toString()]: background,
                 }));
             }
         });
@@ -105,10 +123,10 @@ const FreeCellPage = ({data}) => {
             column.forEach((card) => {
                 const cardElement = document.getElementById(card?.toString());
                 if (cardElement) {
-                    const position = cardElement.getBoundingClientRect();
-                    setCardPositions((prevPositions) => ({
-                        ...prevPositions,
-                        [card.toString()]: position,
+                    const background = cardElement.style.background;
+                    setCardBackgrounds((prevBackground) => ({
+                        ...prevBackground,
+                        [card.toString()]: background,
                     }));
                 }
             });
@@ -196,7 +214,6 @@ const FreeCellPage = ({data}) => {
                     ))}
                 </div>
             </div>
-
 
 
             {/* Columns (below) */}
