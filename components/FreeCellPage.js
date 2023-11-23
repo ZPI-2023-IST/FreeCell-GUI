@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faArrowRight, faPause, faPlay, faRedo} from '@fortawesome/free-solid-svg-icons';
 import Card from '../components/Card';
-import Stack from '../components/Stack';
 
 const buttonStyle = {
     backgroundColor: 'green',
@@ -20,7 +19,8 @@ const buttonStyle = {
 const FreeCellPage = ({data}) => {
     const [currentBoardIndex, setCurrentBoardIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [key, setKey] = useState(0);
+    const [cardPositions, setCardPositions] = useState({});
+
 
     const boardStates = data;
     const currentBoard = boardStates[currentBoardIndex];
@@ -63,11 +63,61 @@ const FreeCellPage = ({data}) => {
         return () => clearInterval(interval);
     }, [currentBoardIndex, boardStates, isPlaying]);
 
-    // Function to force re-render by changing the key
-    const forceRerender = () => setKey((prevKey) => prevKey + 1);
+
+    // useEffect(() => {
+    //     if (currentBoardIndex > 0) {
+    //         //make a loop for stroing all positions of all possible cards in the whoal page, freecells, suitstacks, and columns
+    //         let move = findMove(boardStates[currentBoardIndex - 1], boardStates[currentBoardIndex]);
+    //         const endPosition = document.getElementById(move.movedCard.toString()).getBoundingClientRect()
+    //         const startPosition = cardPositions[move.movedCard.toString()]
+    //         console.log(startPosition.x, endPosition.x)
+    //     }
+    // }, [currentBoardIndex, boardStates, isPlaying])
+
+    useEffect(() => {
+
+        // Iterate through freecells
+        currentBoard.FreeCells.forEach((card) => {
+            const cardElement = document.getElementById(card?.toString());
+            if (cardElement) {
+                const position = cardElement.getBoundingClientRect();
+                setCardPositions((prevPositions) => ({
+                    ...prevPositions,
+                    [card.toString()]: position,
+                }));
+            }
+        });
+
+        // Iterate through suitstacks
+        currentBoard.Stack.forEach((card) => {
+            const cardElement = document.getElementById(card?.toString());
+            if (cardElement) {
+                const position = cardElement.getBoundingClientRect();
+                setCardPositions((prevPositions) => ({
+                    ...prevPositions,
+                    [card.toString()]: position,
+                }));
+            }
+        });
+
+        // Iterate through columns
+        currentBoard.Board.forEach((column) => {
+            column.forEach((card) => {
+                const cardElement = document.getElementById(card?.toString());
+                if (cardElement) {
+                    const position = cardElement.getBoundingClientRect();
+                    setCardPositions((prevPositions) => ({
+                        ...prevPositions,
+                        [card.toString()]: position,
+                    }));
+                }
+            });
+        });
+
+    }, [currentBoardIndex, boardStates, isPlaying]);
 
     return (
-        <div key={key} style={{
+        <div style={{
             maxWidth: '100%',
             padding: '20px',
             boxSizing: 'border-box',
@@ -86,7 +136,6 @@ const FreeCellPage = ({data}) => {
                 <button
                     onClick={() => {
                         handlePlayClick();
-                        forceRerender();
                     }}
                     style={buttonStyle}
                 >
@@ -99,17 +148,14 @@ const FreeCellPage = ({data}) => {
                 <button
                     onClick={() => {
                         handlePrevClick();
-                        forceRerender();
                     }}
                     style={buttonStyle}
                 >
                     <FontAwesomeIcon icon={faArrowLeft} size="3x" color="white"/>
                 </button>
-
                 <button
                     onClick={() => {
                         handleNextClick();
-                        forceRerender();
                     }}
                     style={buttonStyle}
                 >
@@ -145,8 +191,12 @@ const FreeCellPage = ({data}) => {
                     marginRight: '15px',
                     alignItems: 'flex-start', // Align freecells at the top
                 }}>
-                    <Stack stackData={currentBoard.Stack}/></div>
+                    {currentBoard.Stack.map((card, index) => (
+                        <Card key={index} value={card}/>
+                    ))}
+                </div>
             </div>
+
 
 
             {/* Columns (below) */}
@@ -167,7 +217,9 @@ const FreeCellPage = ({data}) => {
                         position: 'relative',
                         width: 'calc(20% - 10px)',
                     }}>
+
                         {column.map((card, cardIndex) => (
+
                             <Card
                                 key={cardIndex}
                                 value={card}
@@ -181,8 +233,10 @@ const FreeCellPage = ({data}) => {
                     </div>
                 ))}
             </div>
+
         </div>
     );
 };
 
 export default FreeCellPage;
+
