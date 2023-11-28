@@ -1,13 +1,29 @@
+import {useEffect, useState} from "react";
 
 const Card = ({value, style}) => {
+  const [cardWidth, setCardWidth] = useState((window.innerWidth || document.documentElement.clientWidth) / 15);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setCardWidth((window.innerWidth || document.documentElement.clientWidth) / 15);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const cardHeight = cardWidth * 1.5;
 
     const cardStyle = {
         border: '2px solid #333',
         borderRadius: '15px',
-        padding: '15px',
-        margin: '10px',
-        minWidth: '120px', // Adjusted width
-        minHeight: '180px', // Adjusted height to maintain the ratio
+        padding: '10px',
+        margin: '5px',
+        minWidth: `${cardWidth}px`,
+        minHeight: `${cardHeight}px`,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',

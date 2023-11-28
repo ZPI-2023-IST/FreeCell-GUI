@@ -15,7 +15,7 @@ const buttonStyle = {
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-    margin: '10px',
+    marginBottom: '10px',
 };
 
 const FreeCellPage = ({data}) => {
@@ -249,11 +249,10 @@ const FreeCellPage = ({data}) => {
                     <div key={columnIndex} style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        marginRight: '10px',
+                        marginRight: '5px',
                         marginBottom: '20px',
                         flex: '1',
                         position: 'relative',
-                        width: 'calc(20% - 10px)',
                     }}>
                         {column.map((card, cardIndex) => (
                             <Card
