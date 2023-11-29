@@ -1,15 +1,25 @@
 import {useEffect, useState} from "react";
 
 const Card = ({value, style}) => {
-    const [cardWidth, setCardWidth] = useState(300);
+    const [cardSize, setCardSize] = useState({
+        width: 300,
+        height: 450, // Initial height based on 1.5 aspect ratio
+    });
 
     useEffect(() => {
         const handleResize = () => {
-            setCardWidth(
+            const newWidth =
                 (typeof window !== "undefined"
                     ? window.innerWidth || document.documentElement.clientWidth
-                    : 1200) / 15
-            );
+                    : 1200) / 15;
+
+            // Calculate new height based on aspect ratio
+            const newHeight = newWidth * 1.5;
+
+            setCardSize({
+                width: newWidth,
+                height: newHeight,
+            });
         };
 
         // Initial update
@@ -28,28 +38,26 @@ const Card = ({value, style}) => {
         };
     }, []);
 
-    const cardHeight = cardWidth * 1.5;
-
     const cardStyle = {
-        border: '2px solid #333',
-        borderRadius: '15px',
-        padding: '10px',
-        margin: '5px',
-        minWidth: `${cardWidth}px`,
-        minHeight: `${cardHeight}px`,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        backgroundColor: 'white',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        position: 'relative',
+        border: "2px solid #333",
+        borderRadius: "15px",
+        padding: "10px",
+        margin: "5px",
+        minWidth: `${cardSize.width}px`,
+        minHeight: `${cardSize.height}px`,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        backgroundColor: "white",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        position: "relative",
         ...style,
     };
 
     const suitStyle_upper_left = {
-        fontSize: '24px',
+        fontSize: "24px",
         color:
             value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
         position: 'absolute',
@@ -100,7 +108,7 @@ export const getSuitSymbol = (suit) => {
         case 's':
             return '♠'; // Spades
         default:
-            return '';
+            return "";
     }
 };
 

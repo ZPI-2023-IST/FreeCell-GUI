@@ -22,13 +22,11 @@ handler.use(cors(corsOptions));
 // Route handler for POST requests
 handler.post(async (req, res) => {
   data_saved = req.body;
-  console.log(data_saved)
   res.status(200).json({ data: data_saved });
 });
 
 // Route handler for GET requests
-handler.get((req, res) => {
-  console.log(data_saved)
+handler.get(async (req, res) => {
   res.status(200).json({ data: data_saved });
 });
 
