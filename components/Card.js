@@ -1,21 +1,34 @@
 import {useEffect, useState} from "react";
 
 const Card = ({value, style}) => {
-  const [cardWidth, setCardWidth] = useState((window.innerWidth || document.documentElement.clientWidth) / 15);
+    const [cardWidth, setCardWidth] = useState(300);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setCardWidth((window.innerWidth || document.documentElement.clientWidth) / 15);
-    };
+    useEffect(() => {
+        const handleResize = () => {
+            setCardWidth(
+                (typeof window !== "undefined"
+                    ? window.innerWidth || document.documentElement.clientWidth
+                    : 1200) / 15
+            );
+        };
 
-    window.addEventListener('resize', handleResize);
+        // Initial update
+        handleResize();
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+        // Add event listener for window resize
+        if (typeof window !== "undefined") {
+            window.addEventListener("resize", handleResize);
+        }
 
-  const cardHeight = cardWidth * 1.5;
+        // Cleanup the event listener when the component is unmounted
+        return () => {
+            if (typeof window !== "undefined") {
+                window.removeEventListener("resize", handleResize);
+            }
+        };
+    }, []);
+
+    const cardHeight = cardWidth * 1.5;
 
     const cardStyle = {
         border: '2px solid #333',
@@ -37,7 +50,8 @@ const Card = ({value, style}) => {
 
     const suitStyle_upper_left = {
         fontSize: '24px',
-        color: value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
+        color:
+            value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
         position: 'absolute',
         top: '10px', // Adjusted top position
         left: '10px', // Adjusted left position
@@ -45,7 +59,8 @@ const Card = ({value, style}) => {
 
     const suitStyle_bottom_right = {
         fontSize: '24px',
-        color: value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
+        color:
+            value && (value.includes('h') || value.includes('d')) ? 'red' : 'black',
         position: 'absolute',
         bottom: '10px', // Adjusted bottom position
         right: '10px', // Adjusted right position
@@ -73,6 +88,7 @@ const Card = ({value, style}) => {
         </div>
     );
 };
+
 export const getSuitSymbol = (suit) => {
     switch (suit) {
         case 'h':
@@ -87,4 +103,5 @@ export const getSuitSymbol = (suit) => {
             return '';
     }
 };
+
 export default Card;
