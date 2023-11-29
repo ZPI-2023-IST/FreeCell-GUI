@@ -3,7 +3,7 @@ import cors from 'cors';
 let data_saved = null;
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your actual frontend origin
+  origin: 'frontend:3000', // Replace with your actual frontend origin
   methods: 'GET,POST',
   allowedHeaders: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
   credentials: true,
