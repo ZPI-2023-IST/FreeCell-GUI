@@ -1,38 +1,51 @@
 // /api/visualize.js
 
-import { createRouter } from 'next-connect';
+import {createRouter} from 'next-connect';
 import cors from 'cors';
-
-let data_saved = null;
+import fs from 'fs/promises';
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your actual frontend origin
-  methods: 'GET,POST',
-  allowedHeaders: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
-  credentials: true,
-  optionsSuccessStatus: 204,
+    origin: 'http://localhost:3000',
+    methods: 'GET,POST',
+    allowedHeaders: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+    credentials: true,
+    optionsSuccessStatus: 204,
 };
+
+const DATA_FILE_PATH = './data.json';
 
 const handler = createRouter();
 
-// Add CORS middleware
 handler.use(cors(corsOptions));
 
-
-// Route handler for POST requests
 handler.post(async (req, res) => {
-  data_saved = req.body;
-  res.status(200).json({ data: data_saved });
+    try {
+        const newData = req.body;
+
+        // Save data to the file
+        await fs.writeFile(DATA_FILE_PATH, JSON.stringify(newData));
+
+        res.status(200).json({data: newData});
+    } catch (error) {
+        console.error('Error saving data:', error);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
 });
 
-// Route handler for GET requests
 handler.get(async (req, res) => {
-  res.status(200).json({ data: data_saved });
+    try {
+        // Get data from the file
+        const data = await fs.readFile(DATA_FILE_PATH, 'utf-8');
+
+        res.status(200).json({data: JSON.parse(data)});
+    } catch (error) {
+        console.error('Error reading data:', error);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
 });
 
-// Return a 405 Method Not Allowed for non-POST requests
 handler.all((req, res) => {
-  res.status(405).end();
+    res.status(405).end();
 });
 
 export default handler.handler();
