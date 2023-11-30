@@ -18,7 +18,7 @@ const handler = createRouter();
 
 handler.use(cors(corsOptions));
 
-handler.post((req, res) => {
+handler.post(async (req, res) => {
     const newData = req.body;
 
     // Save data to the file
@@ -32,7 +32,7 @@ handler.post((req, res) => {
         });
 });
 
-handler.get((req, res) => {
+handler.get(async (req, res) => {
     // Get data from the file
     fs.readFile(DATA_FILE_PATH, 'utf-8')
         .then((data) => {
@@ -47,5 +47,11 @@ handler.get((req, res) => {
 handler.all((req, res) => {
     res.status(405).end();
 });
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};
 
 export default handler.handler();
