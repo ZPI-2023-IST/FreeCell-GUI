@@ -18,30 +18,30 @@ const handler = createRouter();
 
 handler.use(cors(corsOptions));
 
-handler.post(async (req, res) => {
-    try {
-        const newData = req.body;
+handler.post((req, res) => {
+    const newData = req.body;
 
-        // Save data to the file
-        await fs.writeFile(DATA_FILE_PATH, JSON.stringify(newData));
-
-        res.status(200).json({data: newData});
-    } catch (error) {
-        console.error('Error saving data:', error);
-        res.status(500).json({error: 'Internal Server Error'});
-    }
+    // Save data to the file
+    fs.writeFile(DATA_FILE_PATH, JSON.stringify(newData))
+        .then(() => {
+            res.status(200).json({data: newData});
+        })
+        .catch((error) => {
+            console.error('Error saving data:', error);
+            res.status(500).json({error: 'Internal Server Error'});
+        });
 });
 
-handler.get(async (req, res) => {
-    try {
-        // Get data from the file
-        const data = await fs.readFile(DATA_FILE_PATH, 'utf-8');
-
-        res.status(200).json({data: JSON.parse(data)});
-    } catch (error) {
-        console.error('Error reading data:', error);
-        res.status(500).json({error: 'Internal Server Error'});
-    }
+handler.get((req, res) => {
+    // Get data from the file
+    fs.readFile(DATA_FILE_PATH, 'utf-8')
+        .then((data) => {
+            res.status(200).json({data: JSON.parse(data)});
+        })
+        .catch((error) => {
+            console.error('Error reading data:', error);
+            res.status(500).json({error: 'Internal Server Error'});
+        });
 });
 
 handler.all((req, res) => {
