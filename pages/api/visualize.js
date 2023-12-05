@@ -24,7 +24,7 @@ handler.post(async (req, res) => {
     // Save data to the file
     fs.writeFile(DATA_FILE_PATH, JSON.stringify(newData))
         .then(() => {
-            res.status(200).json({data: newData});
+            res.status(200).json({data: newData,url:'/freecell'});
         })
         .catch((error) => {
             console.error('Error saving data:', error);
